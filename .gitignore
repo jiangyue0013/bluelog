@@ -1,0 +1,4 @@
+*.pyc
+*.db
+/.idea
+/bluelog_env
