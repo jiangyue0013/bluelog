@@ -3,7 +3,7 @@ import random
 from faker import Faker
 
 from bluelog.extensions import db
-from bluelog.models import Admin, Category, Comment, Post
+from bluelog.models import Admin, Category, Comment, Post, Link
 
 fake = Faker()
 
@@ -101,4 +101,14 @@ def fake_comments(count=500):
             post=Post.query.get(random.randint(1, Post.query.count()))
         )
         db.session.add(comment)
+    db.session.commit()
+
+
+def fake_url(count=5):
+    for i in range(count):
+        link = Link(
+            name = fake.name(),
+            url = fake.url()
+        )
+        db.session.add(link)
     db.session.commit()

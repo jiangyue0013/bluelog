@@ -37,6 +37,7 @@
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ url_for('admin.new_post') }}">Post</a>
                                     <a class="dropdown-item" href="{{ url_for('admin.new_category') }}">Category</a>
+                                    <a class="dropdown-item" href="{{ url_for('admin.new_link') }}">Link</a>
                                 </div>  
                             </li>
                             <li class="nav-item dropdown">
@@ -55,6 +56,7 @@
                                             <sapn class="badge badge-success">{{ unread_comments }}</sapn>  
                                         {% endif %}
                                     </a>
+                                    <a class="dropdown-item" href="{{ url_for('admin.manage_link') }}">Link</a>
                                 </div>
                             </li>
                             {{ render_nav_item('admin.settings', 'settings') }}

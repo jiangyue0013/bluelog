@@ -12,7 +12,7 @@ from bluelog.extensions import (bootstrap, ckeditor, csrf,
                                 db, mail, moment,
                                 login_manager)
 from bluelog.settings import config
-from bluelog.models import Admin, Category, Comment
+from bluelog.models import Admin, Category, Comment, Link
 
 
 def create_app(config_name=None):
@@ -63,12 +63,14 @@ def register_templete_context(app):
     def make_template_content():
         admin = Admin.query.first()
         categories = Category.query.order_by(Category.name).all()
+        links = Link.query.order_by(Link.name).all()
         if current_user.is_authenticated:
             unread_comments = Comment.query.filter_by(reviewed=False).count()
         else:
             unread_comments = None
         return dict(admin=admin,
                     categories=categories,
+                    links=links,
                     unread_comments=unread_comments)
 
 
@@ -154,10 +156,13 @@ def register_commands(app):
     @click.option('--comment',
                   default=500,
                   help='Quantity of comments, default is 500.')
-    def forge(category, post, comment):
+    @click.option('--url',
+                  default=5,
+                  help='Quantity of comments, default is 5.')
+    def forge(category, post, comment, url):
         """Generates the fake categories, posts, and comments."""
         from bluelog.fakes import (fake_admin, fake_categories, fake_posts,
-                                   fake_comments)
+                                   fake_comments, fake_url)
 
         db.drop_all()
         db.create_all()
@@ -173,5 +178,8 @@ def register_commands(app):
 
         click.echo('Gemerating %d comments..' % comment)
         fake_comments(comment)
+
+        click.echo('Generating %d urls..' % url)
+        fake_url(url)
 
         click.echo('Done.')

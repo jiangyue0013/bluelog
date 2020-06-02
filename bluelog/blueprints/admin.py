@@ -7,8 +7,8 @@ from flask_login import login_required
 
 
 from bluelog.extensions import db
-from bluelog.models import Category, Post, Comment
-from bluelog.forms import PostForm, CategoryForm
+from bluelog.models import Category, Post, Comment, Link
+from bluelog.forms import PostForm, CategoryForm, LinkForm
 from bluelog.utils import redirect_back
 
 admin_bp = Blueprint('admin', __name__)
@@ -69,13 +69,7 @@ def delete_post(post_id):
     db.session.delete(post)
     db.session.commit()
     flash('Post deleted.', 'success')
-    return redirect_back()
-
-
-@admin_bp.route('/category/new')
-@login_required
-def new_category():
-    pass
+    return redirect_back() 
 
 
 @admin_bp.route('/category/manage')
@@ -105,6 +99,13 @@ def manage_comment():
     return render_template('admin/manage_comment.html',
                            comments=comments,
                            pagination=pagination)
+
+
+@admin_bp.route('/link/manage')
+@login_required
+def manage_link():
+    links = Link.query.all()
+    return render_template('admin/manage_link.html', links=links)
 
 
 @admin_bp.route('/settings')
@@ -155,6 +156,16 @@ def delete_category(category_id):
     return redirect(url_for('admin.manage_category'))
 
 
+@admin_bp.route('/link/<int:link_id>/delete', methods=['post'])
+@login_required
+def delete_link(link_id):
+    link = Link.query.get_or_404(link_id)
+    db.session.delete(link)
+    db.session.commit()
+    flash('Link deleted.', 'success')
+    return redirect(url_for('admin.manage_link'))
+
+
 @admin_bp.route('/category/<int:category_id>/edit', methods=['get', 'post'])
 @login_required
 def edit_category(category_id):
@@ -171,3 +182,47 @@ def edit_category(category_id):
 
     form.name.data = category.name
     return render_template('admin/edit_category.html', form=form)
+
+
+@admin_bp.route('/link/<int:link_id>/edit', methods=['get', 'post'])
+@login_required
+def edit_link(link_id):
+    form = LinkForm()
+    link = Link.query.get_or_404(link_id)
+    if form.validate_on_submit():
+        link.name = form.name.data
+        link.url = form.url.data
+        db.session.commit()
+        flash('Link update.', 'success')
+        return redirect(url_for('admin.manage_link'))
+
+    form.name.data = link.name
+    form.url.data = link.url
+    return render_template('admin/edit_link.html', form=form)
+
+@admin_bp.route('/link/new', methods=['get', 'post'])
+@login_required
+def new_link():
+    form = LinkForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        url = form.url.data
+        link = Link(name=name, url=url)
+        db.session.add(link)
+        db.session.commit()
+        flash('New link created.', 'success')
+        return redirect(url_for('admin.manage_link'))
+    return render_template('admin/new_link.html', form=form)
+
+@admin_bp.route('/category/new', methods=['get', 'post'])
+@login_required
+def new_category():
+    form = CategoryForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        category = Category(name=name)
+        db.session.add(category)
+        db.session.commit()
+        flash('New category created.', 'successs')
+        return redirect(url_for('admin.manage_category'))
+    return render_template('admin/new_category.html', form=form)

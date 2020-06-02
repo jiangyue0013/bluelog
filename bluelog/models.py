@@ -64,7 +64,7 @@ class Comment(db.Model):
     replies = db.relationship('Comment', back_populates='replied', cascade='all, delete-orphan')
     replied = db.relationship('Comment', back_populates='replies', remote_side=[id])
 
-class LinK(db.Model):
+class Link(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
     url = db.Column(db.String(255))
