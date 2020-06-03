@@ -28,7 +28,7 @@ def create_app(config_name=None):
     register_commands(app)  # 注册自定义 shell 命令
     register_errors(app)  # 注册错误处理函数
     register_shell_context(app)  # 注册 shell 上下文处理函数
-    register_templete_context(app)  # 注册模板上下文处理函数
+    register_template_context(app)  # 注册模板上下文处理函数
     return app
 
 
@@ -58,7 +58,7 @@ def register_shell_context(app):
         return dict(db=db)
 
 
-def register_templete_context(app):
+def register_template_context(app):
     @app.context_processor
     def make_template_content():
         admin = Admin.query.first()
