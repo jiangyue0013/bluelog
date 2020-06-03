@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% from 'bootstrap/pagination.html' import render_pagination %}
 
-{% block title %}Manage Comments{% endblock %}
+{% block title %}管理评论{% endblock %}
 {% block content %}
 <div class="page-header">
     <h1>Comments
@@ -10,22 +10,22 @@
 
     <ul class="nav nav-pills">
         <li class="nav-item">
-            <a class="nav-link disabled" href="#">Filter</a>
+            <a class="nav-link disabled" href="#">筛选</a>
         </li>
         <li class="nav-item">
             <a class="nav-link {% if request.args.get('filter', 'all') == 'all' %}active{% endif %}" 
-               href="{{ url_for('admin.manage_comment', filter='all') }}">All</a> 
+               href="{{ url_for('admin.manage_comment', filter='all') }}">全部</a>
         </li>
         <li class="nav-item">
             <a class="nav-link {% if request.args.get('filter', 'unread') == 'unread' %}active{% endif %}"
             href="{{ url_for('admin.manage_comment', filter='unread') }}">
-            Unread {% if unread_comments %}<span class="badge badge-success">{{ unread_comments }}</span>{% endif %}
+            未读评论 {% if unread_comments %}<span class="badge badge-success">{{ unread_comments }}</span>{% endif %}
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link {% if request.args.get('filter', 'admin') == 'admin' %}active{% endif %}"
             href="{{ url_for('admin.manage_comment', filter='admin') }}">
-            From Admin
+            来自管理员
             </a>
         </li>
     </ul>
@@ -36,10 +36,10 @@
         <thread>
             <tr>
                 <th>No.</th>
-                <th>Author</th>
-                <th>Body</th>
-                <th>Date</th>
-                <th>Actions</th>
+                <th>作者</th>
+                <th>内容</th>
+                <th>日期</th>
+                <th>操作</th>
             </tr>
         </thread>
         {% for comment in comments %}
@@ -54,7 +54,7 @@
                     {% endif %}
 
                     {% if comment.from_admin %}
-                        <span class="badge badge-primary">Author</span>
+                        <span class="badge badge-primary">作者</span>
                     {% endif %}
                 </td>
                 <td>{{ comment.body }}</td>
@@ -64,15 +64,15 @@
                         <form class="inline" method="post"
                               action="{{ url_for('admin.approve_comment', comment_id=comment.id, next=request.full_path) }}">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                            <button type="submit" class="btn btn-success btn-sm">接受</button>
                         </form>
                     {% endif %}
-                <a class="btn btn-info btn-sm" href="{{ url_for('blog.show_post', post_id=comment.post.id) }}">Post</a>
+                <a class="btn btn-info btn-sm" href="{{ url_for('blog.show_post', post_id=comment.post.id) }}">文章</a>
                 <form class="inline" method="post"
                       action="{{ url_for('admin.delete_comment', comment_id=comment.id, next=request.full_path) }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="btn btn-danger btn-sm"
-                            onclick="return confirm('Are you sure?');">Delete</button>
+                            onclick="return confirm('Are you sure?');">删除</button>
                 </form>
                 </td>
             </tr>
@@ -80,6 +80,6 @@
     </table>
     <div class="page-footer">{{ render_pagination(pagination) }}</div>
 {% else %}
-    <div class="tip"><h5>No comments.</h5></div>
+    <div class="tip"><h5>没有评论。</h5></div>
 {% endif %}
 {% endblock %}

@@ -10,10 +10,10 @@
         {{ post.title }}
         <span class="float-right">
             {% if current_user.is_authenticated %}
-                <a class="btn btn-info btn-sm" href="{{ url_for('admin.edit_post', post_id=post.id) }}">Edit</a>
+                <a class="btn btn-info btn-sm" href="{{ url_for('admin.edit_post', post_id=post.id) }}">编辑</a>
                 <form class="inline" method="POST" action="{{ url_for('admin.delete_post', post_id=post.id, next=url_for('blog.index')) }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</button>
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">删除</button>
                 </form>
             {% endif %}
         </span>
@@ -29,15 +29,15 @@
         <hr>
 
         <div class="comments" id="comments">
-            <h3>{{ comments|length }} coments
+            <h3>{{ comments|length }} 评论
                 <small>
-                    <a href="{{ url_for('.show_post', post_id=post.id, page=pagination.pages or 1) }}#comments">latest</a>
+                    <a href="{{ url_for('.show_post', post_id=post.id, page=pagination.pages or 1) }}#comments">最新</a>
                 </small>
                 {% if current_user.is_authenticated %}
                     <form class="float-right" method="POST" action="{{ url_for('admin.set_comment', post_id=post.id, next=request.full_path) }}">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <button type="submit" class="btn btn-warning btn-sm">
-                            {% if post.can_comment %}Disable{% else %}Enable{% endif %} Comment
+                            {% if post.can_comment %}禁用{% else %}启用{% endif %} 评论
                         </button>
                     </form>
                 {% endif %}
@@ -51,7 +51,7 @@
                                     {% if not comment.reviewed %}
                                         <form class="inline" method="POST" action="{{ url_for('admin.approve_comment', comment_id=comment.id, next=request.full_path) }}">
                                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                            <button type="submit" class="btn btn-success btn-sm">同意</button>
                                         </form>
                                     {% endif %}
                                 </td>
@@ -68,10 +68,10 @@
                                         {% endif %}
                                     </a>
                                     {% if comment.from_admin %}
-                                        <span class="badge badge-primary">Author</span>
+                                        <span class="badge badge-primary">作者</span>
                                     {% endif %}
                                     {% if comment.replied %}
-                                        <span class="badge badge-light">Reply</span>
+                                        <span class="badge badge-light">回复</span>
                                     {% endif %}
                                 </h5>
                                 <small data-toggle="tooltip" data-placement="top" data-delag="500" data-timestamp="{{ comment.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ') }}">
@@ -86,12 +86,12 @@
                             {% endif %}
                             <p class="mb-1">{{ comment.body }}</p>
                             <div class="float-right">
-                                <a class="btn btn-light btn-sm" href="{{ url_for('.reply_comment', comment_id=comment.id) }}">Reply</a>
+                                <a class="btn btn-light btn-sm" href="{{ url_for('.reply_comment', comment_id=comment.id) }}">回复</a>
                                 {% if current_user.is_authenticated %}
-                                    <a class="btn btn-light btn-sm" href="mailto:{{ comment.email }}">Email</a>
+                                    <a class="btn btn-light btn-sm" href="mailto:{{ comment.email }}">发送邮件</a>
                                     <form class="inline" method="POST" action="{{ url_for('admin.delete_comment', comment_id=comment.id, next=request.full_path) }}">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</button>
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">删除</button>
                                     </form>
                                 {% endif %}
                             </div>
@@ -100,7 +100,7 @@
                 </ul>
             {% else %}
                 <div class="tip">
-                    <h5>No comments.</h5>
+                    <h5>没有评论。</h5>
                 </div>
             {% endif %}
         </div>
@@ -109,8 +109,8 @@
         {% endif %}
         {% if request.args.get('reply') %}
             <div class="alert alert-dark">
-                Reply to <strong>{{ request.args.get('author') }}</strong>:
-                <a class="float-right" href="{{ url_for('blog.show_post', post_id=post.id) }}">Cancel</a>
+                回复 <strong>{{ request.args.get('author') }}</strong>:
+                <a class="float-right" href="{{ url_for('blog.show_post', post_id=post.id) }}">取消</a>
             </div>
         {% endif %}
         {% if post.can_comment %}
@@ -118,7 +118,7 @@
                 {{ render_form(form, action=request.full_path) }}
             </div>
         {% else %}
-            <div class="tip"><h5>Comment disabled.</h5></div>
+            <div class="tip"><h5>禁止评论</h5></div>
         {% endif %}
     </div>
     

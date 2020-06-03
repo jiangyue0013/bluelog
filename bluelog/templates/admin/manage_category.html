@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Manage Categories{% endblock %}
+{% block title %}管理分类{% endblock %}
 
 {% block content %}
     <div class="page-header">
@@ -8,7 +8,7 @@
         <small class="text-muted">{{ categories|length }}</small>
         <span class="float-right">
             <a class="btn btn-primary btn-sm"
-               href="{{ url_for('admin.new_category') }}">New Category</a>
+               href="{{ url_for('admin.new_category') }}">新建分类</a>
         </span>
     </h1>
     </div>
@@ -17,9 +17,9 @@
             <thread>
                 <tr>
                     <th>No.</th>
-                    <th>Name</th>
-                    <th>Posts</th>
-                    <th>Actions</th>
+                    <th>名称</th>
+                    <th>文章</th>
+                    <th>操作</th>
                 </tr>
             </thread>
             {% for category in categories %}
@@ -30,22 +30,21 @@
                     <td>
                         {% if category.id != 1 %}
                             <a class="btn btn-info btn-sm"
-                               href="{{ url_for('admin.edit_category', category_id=category.id) }}">Edit</a>
+                               href="{{ url_for('admin.edit_category', category_id=category.id) }}">编辑</a>
 
                             <form class="inline" method="post"
                                   action="{{ url_for('admin.delete_category', category_id=category.id) }}">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <button type="submit" class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Are you sure?');">Delete</button>
+                                        onclick="return confirm('确定删除？');">删除</button>
                             </form>
                         {% endif %}
                     </td>
                 </tr>
             {% endfor %}
         </table>
-        <p class="text-muted">Tips: Deleting a category does not delete the article under that category.
-            The articles under this category wile moved to the default category.</p>
+        <p class="text-muted">提示：删除分类不会删除此分类下的文章。此分类下的文章分类将会被修改为默认。</p>
     {% else %}
-        <div class="tip"><h5>No categories.</h5></div>
+        <div class="tip"><h5>当前无分类。</h5></div>
     {% endif %}
 {% endblock %}

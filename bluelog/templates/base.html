@@ -24,7 +24,7 @@
                 <div class="collapse navbar-collapse" id="navbarColor1">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item"> 
-                            <a class="nav-link" href="/">Home</a>
+                            <a class="nav-link" href="/">主页</a>
                         </li>
                     </ul>
 
@@ -32,34 +32,34 @@
                         {% if current_user.is_authenticated %}
                             <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                    New <span class="caret"></span>
+                                    新建 <span class="caret"></span>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ url_for('admin.new_post') }}">Post</a>
-                                    <a class="dropdown-item" href="{{ url_for('admin.new_category') }}">Category</a>
-                                    <a class="dropdown-item" href="{{ url_for('admin.new_link') }}">Link</a>
+                                    <a class="dropdown-item" href="{{ url_for('admin.new_post') }}">文章</a>
+                                    <a class="dropdown-item" href="{{ url_for('admin.new_category') }}">分类</a>
+                                    <a class="dropdown-item" href="{{ url_for('admin.new_link') }}">友情链接</a>
                                 </div>  
                             </li>
                             <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                    Manage <span class="caret"></span>
+                                    管理 <span class="caret"></span>
                                     {% if unread_comments %}
-                                    <span class="badge badge-success">new</span>
+                                    <span class="badge badge-success">未读评论</span>
                                     {% endif %}
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ url_for('admin.manage_post') }}">Post</a>
-                                    <a class="dropdown-item" href="{{ url_for('admin.manage_category') }}">Category</a>
+                                    <a class="dropdown-item" href="{{ url_for('admin.manage_post') }}">文章</a>
+                                    <a class="dropdown-item" href="{{ url_for('admin.manage_category') }}">分类</a>
                                     <a class="dropdown-item" href="{{ url_for('admin.manage_comment') }}">
-                                        Comment
+                                        评论
                                         {% if unread_comments %}
                                             <sapn class="badge badge-success">{{ unread_comments }}</sapn>  
                                         {% endif %}
                                     </a>
-                                    <a class="dropdown-item" href="{{ url_for('admin.manage_link') }}">Link</a>
+                                    <a class="dropdown-item" href="{{ url_for('admin.manage_link') }}">友情链接</a>
                                 </div>
                             </li>
-                            {{ render_nav_item('admin.settings', 'settings') }}
+                            {{ render_nav_item('admin.settings', '设置') }}
                         {% endif %}
                     </ul>
                 </div>
@@ -83,10 +83,10 @@
                 <small>
                     {% if current_user.is_authenticated %}
                     <!-- 如果用户已经登录，显示下面的“登出”链接 -->
-                    <a href="{{ url_for('auth.logout', next=request.full_path) }}">Logout</a>
+                    <a href="{{ url_for('auth.logout', next=request.full_path) }}">注销</a>
                     {% else %}
                     <!-- 如果没有登录，则现实下面的“登录”按钮 -->
-                    <a href="{{ url_for('auth.login', next=request.full_path) }}">Login</a>
+                    <a href="{{ url_for('auth.login', next=request.full_path) }}">登录</a>
                     {% endif %}
                 </small>
             </footer>

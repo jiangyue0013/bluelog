@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}Manage Links{% endblock %}
+{% block title %}管理友情链接{% endblock %}
 
 {% block content %}
     <div class="page-header">
-    <h1>Links
+    <h1>友情链接
         <small class="text-muted">{{ links|length }}</small>
         <span class="float-right">
             <a class="btn btn-primary btn-sm"
-               href="{{ url_for('admin.new_link') }}">New Link</a>
+               href="{{ url_for('admin.new_link') }}">新建友情链接</a>
         </span>
     </h1>
     </div>
@@ -17,9 +17,9 @@
         <thead>
         <tr>
             <th>No.</th>
-            <th>Name</th>
-            <th>URL</th>
-            <th>Acitons</th>
+            <th>名称</th>
+            <th>网址</th>
+            <th>操作</th>
         </tr>
         </thead>
         {% for link in links %}
@@ -28,18 +28,18 @@
             <td>{{ link.name }}</td>
             <td><a href="{{ link.url }}">{{ link.url }}</a> </td>
             <td><a class="btn btn-info btn-sm"
-                   href="{{  url_for('admin.edit_link', link_id=link.id) }}">Edit</a>
+                   href="{{  url_for('admin.edit_link', link_id=link.id) }}">编辑</a>
                 <form class="inline" method="post"
                       action="{{ url_for('admin.delete_link', link_id=link.id) }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="btn btn-danger btn-sm"
-                            onclick="return confirm('Are you sure?');">Delete</button>
+                            onclick="return confirm('Are you sure?');">删除</button>
                 </form>
             </td>
             </tr>
         {% endfor %}
         </table>
     {% else %}
-        <div class="tip"><h5>No links.</h5></div>
+        <div class="tip"><h5>没有友情链接。</h5></div>
     {% endif %}
 {% endblock %}

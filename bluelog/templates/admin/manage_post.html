@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% from 'bootstrap/pagination.html' import render_pagination %}
 
-{% block title %}Manage Posts{% endblock %}
+{% block title %}管理文章{% endblock %}
 
 {% block content %}
 <div class="page-header">
     <h1>
-        Posts
+        文章
         <small class="text-muted">{{ pagination.total }}</small>
-        <span class="float-right"><a class="btn btn-primary btn-sm" href="{{ url_for('.new_post') }}">New Post</a></span>
+        <span class="float-right"><a class="btn btn-primary btn-sm" href="{{ url_for('.new_post') }}">新建文章</a></span>
     </h1>
 </div>
 {% if posts %}
@@ -16,12 +16,12 @@
         <thread>
             <tr>
                 <th>No.</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Date</th>
-                <th>Comments</th>
-                <th>Words</th>
-                <th>Actions</th>
+                <th>标题</th>
+                <th>分类</th>
+                <th>日期</th>
+                <th>评论</th>
+                <th>字数</th>
+                <th>操作</th>
             </tr>
         </thread>
         {% for post in posts %}
@@ -33,10 +33,10 @@
                 <td><a href="{{ url_for('blog.show_post', post_id=post.id) }}#comments">{{ post.comments|length }}</a></td>
                 <td>{{ post.body|striptags|length }}</td>
                 <td>
-                    <a class="btn btn-info btn-sm" href="{{ url_for('.edit_post', post_id=post.id) }}">Edit</a>
+                    <a class="btn btn-info btn-sm" href="{{ url_for('.edit_post', post_id=post.id) }}">编辑</a>
                     <form class="inline" method="POST" action="{{ url_for('.delete_post', post_id=post.id, next=request.full_path) }}">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</button>
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">删除</button>
                     </form>
                 </td>
             </tr>
@@ -44,6 +44,6 @@
     </table>
     <div class="page-footer">{{ render_pagination(pagination) }}</div>
 {% else %}
-    <div class="tip"><h5>No posts.</h5></div>
+    <div class="tip"><h5>没有文章。</h5></div>
 {% endif %}
 {% endblock %}
