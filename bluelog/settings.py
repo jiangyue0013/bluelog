@@ -1,6 +1,8 @@
 import os
 
-from DO_NOT_UPLOAD import MYSQL_USER, MYSQL_USER_PASSWORD, MYSQL_USER_PORT, PRO_MYSQL_USER, PRO_MYSQL_PASSWORD, PRO_MYSQL_PORT
+from DO_NOT_UPLOAD import (MYSQL_USER, MYSQL_USER_PASSWORD, MYSQL_USER_PORT,
+                           PRO_MYSQL_USER, PRO_MYSQL_PASSWORD, PRO_MYSQL_PORT,
+                           SECRET_KEY)
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
