@@ -2,3 +2,5 @@
 *.db
 /.idea
 /bluelog_env
+.env
+DO_NOT_UPLOAD.py

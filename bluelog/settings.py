@@ -1,5 +1,7 @@
 import os
 
+from DO_NOT_UPLOAD import MYSQL_USER, MYSQL_USER_PASSWORD, MYSQL_USER_PORT, PRO_MYSQL_USER, PRO_MYSQL_PASSWORD, PRO_MYSQL_PORT
+
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 class BaseConfig(object):
@@ -23,7 +25,7 @@ class BaseConfig(object):
 
 
 class DevelopmentConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data-dev.db')
+    SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://' + MYSQL_USER + ':' + MYSQL_USER_PASSWORD +'@' +  MYSQL_USER_PORT +'/bluelog_db'
 
 class TestingConfig(BaseConfig):
     TESTING = True
@@ -31,7 +33,7 @@ class TestingConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:' # in-emory database
 
 class ProductionConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///' + os.path.join(basedir, 'data.db'))
+    SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://' + PRO_MYSQL_USER + ':' + PRO_MYSQL_PASSWORD +'@' +  PRO_MYSQL_PORT +'/bluelog_db'
 
 config = {
     'development': DevelopmentConfig,
