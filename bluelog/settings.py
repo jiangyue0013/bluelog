@@ -27,7 +27,7 @@ class BaseConfig(object):
 
 
 class DevelopmentConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://' + MYSQL_USER + ':' + MYSQL_USER_PASSWORD +'@' +  MYSQL_USER_PORT +'/bluelog_db'
+    SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://' + MYSQL_USER + ':' + MYSQL_USER_PASSWORD +'@' +  MYSQL_USER_PORT +'/bluelog_db?charset=utf8'
 
 class TestingConfig(BaseConfig):
     TESTING = True
@@ -35,7 +35,8 @@ class TestingConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:' # in-emory database
 
 class ProductionConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://' + PRO_MYSQL_USER + ':' + PRO_MYSQL_PASSWORD +'@' +  PRO_MYSQL_PORT +'/bluelog_db' + ", encoding='utf8'"
+    SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://{}:{}@{}/bluelog_db?charset=utf8".format(PRO_MYSQL_USER, PRO_MYSQL_PASSWORD, PRO_MYSQL_PORT)
+    # SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://' + PRO_MYSQL_USER + ':' + PRO_MYSQL_PASSWORD +'@' +  PRO_MYSQL_PORT +'/bluelog_db' + ", encoding='utf8'"
 
 config = {
     'development': DevelopmentConfig,
