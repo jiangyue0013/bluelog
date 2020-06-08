@@ -53,7 +53,7 @@ def register_extensions(app):
     bootstrap.init_app(app)
     ckeditor.init_app(app)
     csrf.init_app(app)
-    db.init_app(app)
+    db.init_app(app,)
     login_manager.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
