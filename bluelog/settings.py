@@ -35,7 +35,7 @@ class TestingConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:' # in-emory database
 
 class ProductionConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://' + PRO_MYSQL_USER + ':' + PRO_MYSQL_PASSWORD +'@' +  PRO_MYSQL_PORT +'/bluelog_db'
+    SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://' + PRO_MYSQL_USER + ':' + PRO_MYSQL_PASSWORD +'@' +  PRO_MYSQL_PORT +'/bluelog_db' + ", encoding='utf8'"
 
 config = {
     'development': DevelopmentConfig,

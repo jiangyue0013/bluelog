@@ -1,16 +1,18 @@
 import os
 import click
+import logging
 
 from flask import Flask, render_template
 from flask_login import current_user
 from flask_wtf.csrf import CSRFError
+from logging.handlers import RotatingFileHandler
 
 from bluelog.blueprints.admin import admin_bp
 from bluelog.blueprints.auth import auth_bp
 from bluelog.blueprints.blog import blog_bp
 from bluelog.extensions import (bootstrap, ckeditor, csrf,
                                 db, mail, moment,
-                                login_manager)
+                                login_manager, migrate)
 from bluelog.settings import config
 from bluelog.models import Admin, Category, Comment, Link
 
@@ -22,7 +24,7 @@ def create_app(config_name=None):
     app = Flask('bluelog')
     app.config.from_object(config[config_name])
 
-    register_logging(app)  # 注册日志处理器
+    register_logger(app)  # 注册日志处理器
     register_extensions(app)  # 注册扩展（扩展初始化）
     register_blueprints(app)  # 注册蓝本
     register_commands(app)  # 注册自定义 shell 命令
@@ -32,8 +34,19 @@ def create_app(config_name=None):
     return app
 
 
-def register_logging(app):
-    pass
+def register_logger(app):
+    app.logger.setLevel(logging.INFO)
+
+    formatter = logging.Formatter('%(asctime)s - %(name)s - $(levelname)s - %(message)s')
+
+    file_handler = RotatingFileHandler('./logs/bluelog.log',
+                                       maxBytes=10 * 1024 * 1024,
+                                       backupCount=10)
+    file_handler.setFormatter(formatter)
+    file_handler.setLevel(logging.INFO)
+
+    if not app.debug:
+        app.logger.addHandler(file_handler)
 
 
 def register_extensions(app):
@@ -44,6 +57,7 @@ def register_extensions(app):
     login_manager.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
+    migrate.init_app(app, db)
 
 
 def register_blueprints(app):
