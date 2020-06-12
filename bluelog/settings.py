@@ -1,8 +1,5 @@
 import os
 
-from DO_NOT_UPLOAD import (MYSQL_USER, MYSQL_USER_PASSWORD, MYSQL_USER_PORT,
-                           PRO_MYSQL_USER, PRO_MYSQL_PASSWORD, PRO_MYSQL_PORT,
-                           SECRET_KEY)
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
@@ -27,16 +24,24 @@ class BaseConfig(object):
 
 
 class DevelopmentConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://' + MYSQL_USER + ':' + MYSQL_USER_PASSWORD +'@' +  MYSQL_USER_PORT +'/bluelog_db?charset=utf8'
+    DE_MYSQL_USER = os.getenv('DE_MYSQL_USER')
+    DE_MYSQL_USER_PASSWORD = os.getenv('DE_MYSQL_PASSWORD')
+    DE_MYSQL_USER_PORT = os.getenv('DE_MYSQL_PORT')
+    SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://' + DE_MYSQL_USER + ':' + DE_MYSQL_USER_PASSWORD +'@' +  DE_MYSQL_USER_PORT +'/bluelog_db'
+
 
 class TestingConfig(BaseConfig):
     TESTING = True
     WTF_CSRF_ENABLE = False
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:' # in-emory database
 
+
 class ProductionConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://{}:{}@{}/bluelog_db?charset=utf8mb8".format(PRO_MYSQL_USER, PRO_MYSQL_PASSWORD, PRO_MYSQL_PORT)
-    # SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://' + PRO_MYSQL_USER + ':' + PRO_MYSQL_PASSWORD +'@' +  PRO_MYSQL_PORT +'/bluelog_db' + ", encoding='utf8'"
+    PR_MYSQL_USER = os.getenv('PR_MYSQL_USER')
+    PR_MYSQL_PASSWORD = os.getenv('PR_MYSQL_PASSWORD')
+    PR_MYSQL_PORT = os.getenv('PR_MYSQL_PORT')
+    SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://' + PR_MYSQL_USER + ':' + PR_MYSQL_PASSWORD + '@' + PR_MYSQL_PORT + '/bluelog_db'
+
 
 config = {
     'development': DevelopmentConfig,

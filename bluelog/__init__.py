@@ -19,7 +19,7 @@ from bluelog.models import Admin, Category, Comment, Link
 
 def create_app(config_name=None):
     if config_name is None:
-        config_name = os.getenv('FLASK_CONFIG', 'development')
+        config_name = os.getenv('FLASK_CONFIG')
 
     app = Flask('bluelog')
     app.config.from_object(config[config_name])
