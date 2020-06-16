@@ -9,12 +9,13 @@ fake = Faker()
 
 
 def fake_admin():
+    """创建虚假管理员信息"""
     admin = Admin(
-        username = 'admin',
-        blog_title = 'Bluelog',
-        blog_sub_title = "No, I'm the real thing.",
-        name = 'Mima Kirigoe',
-        about = 'Um, 1, Mima Kirigoe, had a fun time as a member of CHAM...'
+        username='admin',
+        blog_title='Bluelog',
+        blog_sub_title="No, I'm the real thing.",
+        name='Mima Kirigoe',
+        about='Um, 1, Mima Kirigoe, had a fun time as a member of CHAM...'
     )
     admin.set_password('helloflask')
     db.session.add(admin)
@@ -22,6 +23,7 @@ def fake_admin():
 
 
 def fake_categories(count=10):
+    """创建虚假分类"""
 
     category = Category(name='Default')
     db.session.add(category)
@@ -36,6 +38,7 @@ def fake_categories(count=10):
 
 
 def fake_posts(count=50):
+    """创建虚假文章"""
     for i in range(count):
         post = Post(
             title=fake.sentence(),
@@ -49,6 +52,7 @@ def fake_posts(count=50):
 
 
 def fake_comments(count=500):
+    """创建虚假评论"""
     for i in range(count):
         comment = Comment(
             author=fake.name(),
@@ -105,6 +109,7 @@ def fake_comments(count=500):
 
 
 def fake_url(count=5):
+    """创建虚假链接"""
     for i in range(count):
         link = Link(
             name = fake.name(),

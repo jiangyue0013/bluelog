@@ -19,8 +19,18 @@ migrate = Migrate()
 login_manager.login_view = 'auth.login'
 login_manager.login_message_category = 'waring'
 
+
 @login_manager.user_loader
 def load_user(user_id):
+    """查询管理员对象
+
+    返回管理员查询对象
+
+    Args:
+        user_id:用户的id
+    Returns:
+        返回名为 user的管理员查询对象
+    """
     from bluelog.models import Admin
     user = Admin.query.get(int(user_id))
     return user

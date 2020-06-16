@@ -14,9 +14,14 @@ from bluelog.utils import redirect_back
 admin_bp = Blueprint('admin', __name__)
 
 
-@admin_bp.route('/settings', methods=['get','post'])
+@admin_bp.route('/settings', methods=['get', 'post'])
 @login_required
 def settings():
+    """设置界面路由函数
+
+    Returns:
+        设置界面
+    """
     form = SettingForm()
     if form.validate_on_submit():
         current_user.name = form.name.data
@@ -32,9 +37,15 @@ def settings():
     form.about.data = current_user.about
     return render_template('admin/settings.html', form=form)
 
+
 @admin_bp.route('/post/manage')
 @login_required
 def manage_post():
+    """文章管理界面路由函数
+
+    Returns:
+        文章管理界面
+    """
     page = request.args.get('page', 1, type=int)
     pagination = Post.query.order_by(
         Post.timestamp.desc()
@@ -49,6 +60,11 @@ def manage_post():
 @admin_bp.route('/category/manage')
 @login_required
 def manage_category():
+    """分类管理界面路由函数
+
+    Returns:
+        分类管理界面
+    """
     categories = Category.query.all()
     return render_template('admin/manage_category.html', categories=categories)
 
@@ -56,6 +72,11 @@ def manage_category():
 @admin_bp.route('/comment/manage')
 @login_required
 def manage_comment():
+    """评论管理界面路由函数
+
+    Returns:
+        评论管理界面
+    """
     filter_rule = request.args.get('filter', 'all')  # 从查询字符串获取过滤规则
     page = request.args.get('page', 1, type=int)
     per_page = current_app.config['BLUELOG_COMMENT_PER_PAGE']
@@ -78,6 +99,11 @@ def manage_comment():
 @admin_bp.route('/post/new', methods=['GET', 'POST'])
 @login_required
 def new_post():
+    """创建新文章界面路由函数
+
+    Returns:
+        创建新文章界面
+    """
     form = PostForm()
     if form.validate_on_submit():
         title = form.title.data
@@ -94,6 +120,14 @@ def new_post():
 @admin_bp.route('/post/<int:post_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_post(post_id):
+    """文章编辑界面路由函数
+
+    Args:
+        post_id:文章id
+
+    Returns:
+        文章编辑界面
+    """
     form = PostForm()
     post = Post.query.get_or_404(post_id)
     if form.validate_on_submit():
@@ -112,6 +146,13 @@ def edit_post(post_id):
 @admin_bp.route('/post/<int:post_id>/delete', methods=['POST'])
 @login_required
 def delete_post(post_id):
+    """删除文章界面
+
+    Args:
+        post_id:删除的文章id
+    Returns:
+        删除界面
+    """
     post = Post.query.get_or_404(post_id)
     db.session.delete(post)
     db.session.commit()
@@ -122,6 +163,11 @@ def delete_post(post_id):
 @admin_bp.route('/link/manage')
 @login_required
 def manage_link():
+    """链接管理界面
+
+    Returns:
+        返回路由管理界面
+    """
     links = Link.query.all()
     return render_template('admin/manage_link.html', links=links)
 
@@ -129,6 +175,7 @@ def manage_link():
 @admin_bp.route('/set-comment/<int:post_id>', methods=['POST'])
 @login_required
 def set_comment(post_id):
+    """设置评论开关"""
     post = Post.query.get_or_404(post_id)
     if post.can_comment:
         post.can_comment = False
@@ -140,15 +187,21 @@ def set_comment(post_id):
     return redirect(url_for('blog.show_post', post_id=post_id))
 
 
-@admin_bp.route('/comment/delete')
+@admin_bp.route('/comment/delete/<int:comment_id>', methods=['POST'])
 @login_required
-def delete_comment():
-    pass
+def delete_comment(comment_id):
+    """删除评论"""
+    comment = Comment.query.get_or_404(comment_id)
+    db.session.delete(comment)
+    db.session.commit()
+    flash('评论删除成功.', 'success')
+    return redirect_back()
 
 
 @admin_bp.route('/comment/<int:comment_id>/approve', methods=['POST'])
 @login_required
 def approve_comment(comment_id):
+    """已读评论"""
     comment = Comment.query.get_or_404(comment_id)
     comment.reviewed = True
     db.session.commit()
@@ -159,6 +212,7 @@ def approve_comment(comment_id):
 @admin_bp.route('/category/<int:category_id>/delete', methods=['post'])
 @login_required
 def delete_category(category_id):
+    """删除分类"""
     category = Category.query.get_or_404(category_id)
     if category.id == 1:
         flash('You can not delete the default category.', 'warning')
@@ -171,6 +225,7 @@ def delete_category(category_id):
 @admin_bp.route('/link/<int:link_id>/delete', methods=['post'])
 @login_required
 def delete_link(link_id):
+    """删除链接"""
     link = Link.query.get_or_404(link_id)
     db.session.delete(link)
     db.session.commit()
@@ -181,6 +236,7 @@ def delete_link(link_id):
 @admin_bp.route('/category/<int:category_id>/edit', methods=['get', 'post'])
 @login_required
 def edit_category(category_id):
+    """编辑分类"""
     form = CategoryForm()
     category = Category.query.get_or_404(category_id)
     if category.id == 1:
@@ -199,6 +255,7 @@ def edit_category(category_id):
 @admin_bp.route('/link/<int:link_id>/edit', methods=['get', 'post'])
 @login_required
 def edit_link(link_id):
+    """编辑链接"""
     form = LinkForm()
     link = Link.query.get_or_404(link_id)
     if form.validate_on_submit():
@@ -212,9 +269,11 @@ def edit_link(link_id):
     form.url.data = link.url
     return render_template('admin/edit_link.html', form=form)
 
+
 @admin_bp.route('/link/new', methods=['get', 'post'])
 @login_required
 def new_link():
+    """新建链接"""
     form = LinkForm()
     if form.validate_on_submit():
         name = form.name.data
@@ -226,9 +285,11 @@ def new_link():
         return redirect(url_for('admin.manage_link'))
     return render_template('admin/new_link.html', form=form)
 
+
 @admin_bp.route('/category/new', methods=['get', 'post'])
 @login_required
 def new_category():
+    """新建分类"""
     form = CategoryForm()
     if form.validate_on_submit():
         name = form.name.data

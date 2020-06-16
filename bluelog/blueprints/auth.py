@@ -10,6 +10,7 @@ auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    """管理员登录函数"""
     if current_user.is_authenticated:
         return redirect(url_for('blog.index'))
     
@@ -34,6 +35,7 @@ def login():
 @auth_bp.route('/logout')
 @login_required  # 用于视图保护
 def logout():
+    """管理员注销"""
     logout_user()
     flash('Logout success.', 'info')
     return redirect_back()

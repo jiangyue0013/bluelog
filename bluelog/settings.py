@@ -3,7 +3,12 @@ import os
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
+
 class BaseConfig(object):
+    """本项目的基础设置类
+
+    在这个类中，规定了开发环境和生产环境中通用的设置。其中包括SECRET_KEY，数据库，邮件，博客展示数目，博客主题设置。
+    """
     SECRET_KEY = os.getenv('SECRET_KEY', 'secret string')
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -24,6 +29,11 @@ class BaseConfig(object):
 
 
 class DevelopmentConfig(BaseConfig):
+    """开发环境设置
+
+    包括基础设置之外的数据库设置
+
+    """
     DE_MYSQL_USER = os.getenv('DE_MYSQL_USER')
     DE_MYSQL_USER_PASSWORD = os.getenv('DE_MYSQL_PASSWORD')
     DE_MYSQL_USER_PORT = os.getenv('DE_MYSQL_PORT')
@@ -31,12 +41,22 @@ class DevelopmentConfig(BaseConfig):
 
 
 class TestingConfig(BaseConfig):
+    """测试环境设置
+
+    基础设置外的数据库设置
+
+    """
     TESTING = True
     WTF_CSRF_ENABLE = False
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:' # in-emory database
 
 
 class ProductionConfig(BaseConfig):
+    """生产环境设置
+
+    设置生产环境的数据库设置
+
+    """
     PR_MYSQL_USER = os.getenv('PR_MYSQL_USER')
     PR_MYSQL_PASSWORD = os.getenv('PR_MYSQL_PASSWORD')
     PR_MYSQL_PORT = os.getenv('PR_MYSQL_PORT')
