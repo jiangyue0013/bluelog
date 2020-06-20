@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}关于作者{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="display-3">关于作者</h1>
+</div>
+<div class="row">
+    <div class="col-sm-8">
+        {{ admin.name}}<hr>
+        {{ admin.about }}
+    </div>
+    <div class="col-sm-4">
+        {% include 'blog/_sidebar.html' %}
+    </div>
+</div>
+{% endblock %}
