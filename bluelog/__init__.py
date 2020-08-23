@@ -1,20 +1,20 @@
-import os
-import click
 import logging
+import os
+from logging.handlers import RotatingFileHandler
 
+import click
 from flask import Flask, render_template
 from flask_login import current_user
 from flask_wtf.csrf import CSRFError
-from logging.handlers import RotatingFileHandler
 
+from bluelog.apis.v1 import api_v1
 from bluelog.blueprints.admin import admin_bp
 from bluelog.blueprints.auth import auth_bp
 from bluelog.blueprints.blog import blog_bp
-from bluelog.extensions import (bootstrap, ckeditor, csrf,
-                                db, mail, moment,
-                                login_manager, migrate)
-from bluelog.settings import config
+from bluelog.extensions import (bootstrap, ckeditor, csrf, db, login_manager,
+                                mail, migrate, moment)
 from bluelog.models import Admin, Category, Comment, Link
+from bluelog.settings import config
 
 
 def create_app(config_name=None):
@@ -76,7 +76,8 @@ def register_extensions(app):
     bootstrap.init_app(app)
     ckeditor.init_app(app)
     csrf.init_app(app)
-    db.init_app(app,)
+    csrf.exempt(api_v1)
+    db.init_app(app,)  # 取消 api_v1 蓝本的 csrf 保护
     login_manager.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
@@ -94,6 +95,10 @@ def register_blueprints(app):
     app.register_blueprint(blog_bp)
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(api_v1, url_prefix='/api/v1')
+    # 为 api_v1 指定子域
+    # app.register_blueprint(api_v1, subdomain='api', url_prefix='/v1')
+
 
 
 def register_shell_context(app):
