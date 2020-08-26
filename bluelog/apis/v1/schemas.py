@@ -10,6 +10,17 @@ def post_schem(post):
         'category_id': post.category_id,
     }
 
+def posts_schem(posts, current, prev, next, pagination):
+    return {
+        'self': current,
+        'posts': [post_schem(post) for post in posts],
+        'prev': prev,
+        'last': url_for('.posts', page=pagination.pages, _external=True),
+        'first': url_for('.posts', page=1, _external=True),
+        'next':next,
+        'count': pagination.total,
+    }
+
 def category_schem(category):
     return {
         'id': category.id,
