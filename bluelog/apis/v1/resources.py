@@ -5,20 +5,14 @@ from flask.views import MethodView
 from bluelog.apis.v1 import api_v1
 from bluelog.apis.v1.auth import auth_required, generate_token
 from bluelog.apis.v1.errors import api_abort, ValidationError
-from bluelog.apis.v1.schemas import post_schem, posts_schem
-from bluelog.models import Admin, Post
+from bluelog.apis.v1.schemas import post_schem, posts_schem, category_schem
+from bluelog.models import Admin, Post, Category
 from bluelog.extensions import db
 
 
 @api_v1.route('/')
 def index():
     return jsonify(message='hello, world!')
-
-
-# @api_v1.route('/post/<int:post_id>')
-# def post_id(post_id):
-#     post = Post.query.get_or_404(post_id)
-#     return post_schem(post)
 
 
 def get_post_body():
@@ -124,3 +118,19 @@ api_v1.add_url_rule(
     view_func=PostsAPI.as_view('posts'),
     methods=['GET', 'POST']
     )
+
+
+class CategoryAPI(MethodView):
+
+    # decorator = [auth_required]
+    # @auth_required
+    def get(self, category_id):
+        category = Category.query.get_or_404(category_id)
+        return jsonify(category_schem(category))
+    
+api_v1.add_url_rule(
+    '/category/<int:category_id>',
+    view_func=CategoryAPI.as_view('category'),
+    methods=['GET', 'POST']
+    )
+

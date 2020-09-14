@@ -1,10 +1,11 @@
+import jwt
+
 try:
     from urlparse import urlparse, urljoin
 except ImportError:
     from urllib.parse import urlparse, urljoin
 
-from flask import request, redirect, url_for, current_app
-
+from flask import current_app, redirect, request, url_for
 
 def is_safe_url(target):
     """检查一个链接是否安全
@@ -41,3 +42,37 @@ def redirect_back(default='blog.index', **kwargs):
         if is_safe_url(target):
             return redirect(target)
     return redirect(url_for(default, **kwargs))
+
+
+def generate_jwt(payload, expiry, secret=None):
+    """
+    :param payload: dict 载荷
+    :param expiry: dateime 有效期
+    :param secret: 秘钥
+    :return: 生成 jwt
+    """
+    _payload = {'exp': expiry}
+    _payload.update(payload)
+    if not secret:
+        secret = current_app.config['JWT_SECRET']  # 在配置文件中配置 JWT_SECRET
+    
+    token = jwt.encode(_payload, secret, algorithm='HS256')
+    return token.decode()
+
+
+def verify_jwt(token, secret=None):
+    """
+    校验jwt
+    :param token: jwt
+    :param secret: 秘钥
+    :return dict: payload
+    """
+    if not secret:
+        secret = current_app.config['JWT_SECRET']
+    
+    try:
+        payload = jwt.decode(token, secret, algorithm='HS256')
+    except jwt.PyJWTError:
+        payload = None
+    
+    return payload

@@ -10,6 +10,7 @@ class BaseConfig(object):
     在这个类中，规定了开发环境和生产环境中通用的设置。其中包括SECRET_KEY，数据库，邮件，博客展示数目，博客主题设置。
     """
     SECRET_KEY = os.getenv('SECRET_KEY', 'secret string')
+    JWT_SECRET = os.getenv('JWT_SECRET', 'secret string')  # JWT 加密用的 secret
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
