@@ -1,11 +1,11 @@
 import jwt
+from flask import current_app, g, redirect, request, url_for
 
 try:
     from urlparse import urlparse, urljoin
 except ImportError:
     from urllib.parse import urlparse, urljoin
 
-from flask import current_app, redirect, request, url_for
 
 def is_safe_url(target):
     """检查一个链接是否安全
@@ -76,3 +76,19 @@ def verify_jwt(token, secret=None):
         payload = None
     
     return payload
+
+
+def jwt_authentication():
+    """
+    根据 jwt 验证用户身份
+    """
+    g.user_id = None
+    g.is_refresh_token = False
+    authorization = request.headers.get('Authorization')
+    if authorization and authorization.startswith('Bearer '):
+        token = authorization.strip()[7:]
+        payload = verify_jwt(token)
+        if payload:
+            g.user_id = payload.get('user_id')
+            g.is_refresh_token = payload.get('refresh')
+            print(g.is_refresh_token)

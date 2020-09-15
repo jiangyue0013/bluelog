@@ -6,6 +6,7 @@ import click
 from flask import Flask, render_template
 from flask_login import current_user
 from flask_wtf.csrf import CSRFError
+import jwt
 
 from bluelog.apis.v1 import api_v1
 from bluelog.blueprints.admin import admin_bp
@@ -15,6 +16,7 @@ from bluelog.extensions import (bootstrap, ckeditor, csrf, db, login_manager,
                                 mail, migrate, moment)
 from bluelog.models import Admin, Category, Comment, Link
 from bluelog.settings import config
+from bluelog.utils import jwt_authentication, test_before_request1, test_before_request2
 
 
 def create_app(config_name=None):
@@ -32,6 +34,8 @@ def create_app(config_name=None):
 
     app = Flask('bluelog')
     app.config.from_object(config[config_name])
+
+    app.before_request(jwt_authentication)  # 添加请求钩子
 
     register_logger(app)  # 注册日志处理器
     register_extensions(app)  # 注册扩展（扩展初始化）

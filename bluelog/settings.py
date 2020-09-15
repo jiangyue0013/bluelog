@@ -10,13 +10,16 @@ class BaseConfig(object):
     在这个类中，规定了开发环境和生产环境中通用的设置。其中包括SECRET_KEY，数据库，邮件，博客展示数目，博客主题设置。
     """
     SECRET_KEY = os.getenv('SECRET_KEY', 'secret string')
+    # jwt 相关设置项
     JWT_SECRET = os.getenv('JWT_SECRET', 'secret string')  # JWT 加密用的 secret
-
+    JWT_EXPIRE_HOURS = os.getenv('JWT_EXPIRE_HOURS', 1)  # JWT 短期 token 的过期时间， 默认 1 小时
+    JWT_EXPIRE_DAYS = os.getenv('JWT_EXPIRE_DAYS', 1)  # JWT 长期 token 的过期时间，默认一天
+    # SQLalchemy 相关设置项
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-
+    # 邮件相关设置项
     MAIL_SERVER = os.getenv('MAIL_SERVER')
-    MAIL_PORT = 465
-    MAIL_USE_SSL = True
+    MAIL_PORT = os.getenv('MAIL_PORT')
+    MAIL_USE_SSL = os.getenv('MAIL_USE_SSL')
     MAIL_USERNAME = os.getenv('MAIL_USERNAME')
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
     MAIL_DEfAULT_SENDER = ('Bluelog Admin', MAIL_USERNAME)
@@ -27,6 +30,8 @@ class BaseConfig(object):
     BLUELOG_COMMENT_PER_PAGE = 15
     # ('theme name', 'display name')
     BLUELOG_THEMES = {'perfect_blue':'Perfect Blue', 'Black_swan': 'Black Swan'}
+    # 为了使 API post 方法不发生 csrf 错误，关闭 csrf 验证，如果不使用 API 要打开。
+    WTF_CSRF_ENABLED = False
 
 
 class DevelopmentConfig(BaseConfig):

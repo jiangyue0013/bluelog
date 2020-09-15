@@ -1,18 +1,14 @@
 import re
 from flask import current_app, g, jsonify, request, url_for
+from flask import json
 from flask.views import MethodView
 
 from bluelog.apis.v1 import api_v1
-from bluelog.apis.v1.auth import auth_required, generate_token
+from bluelog.apis.v1.auth import auth_required, generate_token, AuthorizationResource, jwt_login_required
 from bluelog.apis.v1.errors import api_abort, ValidationError
 from bluelog.apis.v1.schemas import post_schem, posts_schem, category_schem
 from bluelog.models import Admin, Post, Category
 from bluelog.extensions import db
-
-
-@api_v1.route('/')
-def index():
-    return jsonify(message='hello, world!')
 
 
 def get_post_body():
@@ -38,32 +34,36 @@ class PostAPI(MethodView):
     # @auth_required
     def get(self, post_id):
         post = Post.query.get_or_404(post_id)
-        # if g.current_user != post.author:
-        #     return api_abort(403)
         return jsonify(post_schem(post))
     
-    @auth_required
+    @jwt_login_required
     def put(self, post_id):
         post = Post.query.get_or_404(post_id)
-        if g.current_user != post.author:
-            return api_abort(403)
         post.body = get_post_body(post)
         db.session.commit()
         return '', 204
-
+    
+    @jwt_login_required
     def patch(self, post_id):
-        pass
+        post = Post.query.get(post_id)
+        if post:
+            data = request.get_json()
+            post.title = data.get('title')
+            post.body = data.get('body')
 
-    @auth_required
+        else:
+            return jsonify(message="文章不存在")
+
+    @jwt_login_required
     def delete(self, post_id):
-        pass
-
-
-api_v1.add_url_rule(
-    '/post/<int:post_id>', 
-    view_func=PostAPI.as_view('post'), 
-    methods=['GET', 'PUT', 'PATCH', 'Delete']
-    )
+        post = Post.query.get(post_id)
+        if post:
+            post_title = post.title
+            db.session.delete(post)
+            db.session.commit()
+            return jsonify(message="删除 %s 成功" % post_title), 204
+        else:
+            return jsonify(message="文章不存在")
 
 
 class AuthTokenAPI(MethodView):
@@ -92,13 +92,6 @@ class AuthTokenAPI(MethodView):
         return response
 
 
-api_v1.add_url_rule(
-    '/oauth/token', 
-    view_func=AuthTokenAPI.as_view('token'), 
-    methods=['POST']
-    )
-
-
 class PostsAPI(MethodView):
     def get(self):
         page = request.args.get('page', 1, type=int)
@@ -113,12 +106,6 @@ class PostsAPI(MethodView):
             next = url_for('.posts', page=page + 1, _external=True)
         return jsonify(posts_schem(posts, current, prev, next, pagination))
 
-api_v1.add_url_rule(
-    '/posts',
-    view_func=PostsAPI.as_view('posts'),
-    methods=['GET', 'POST']
-    )
-
 
 class CategoryAPI(MethodView):
 
@@ -127,10 +114,11 @@ class CategoryAPI(MethodView):
     def get(self, category_id):
         category = Category.query.get_or_404(category_id)
         return jsonify(category_schem(category))
-    
-api_v1.add_url_rule(
-    '/category/<int:category_id>',
-    view_func=CategoryAPI.as_view('category'),
-    methods=['GET', 'POST']
-    )
 
+
+api_v1.add_url_rule('/', view_func=IndexAPI.as_view('index'), methods=['GET'])
+api_v1.add_url_rule('/oauth/token', view_func=AuthTokenAPI.as_view('token'), methods=['POST'])
+api_v1.add_url_rule('/postauth', view_func=AuthorizationResource.as_view('postauth'), methods=['GET', 'POST'])
+api_v1.add_url_rule('/posts', view_func=PostsAPI.as_view('posts'), methods=['GET', 'POST'])
+api_v1.add_url_rule('/post/<int:post_id>', view_func=PostAPI.as_view('post'), methods=['GET', 'PUT', 'PATCH', 'Delete'])
+api_v1.add_url_rule('/category/<int:category_id>', view_func=CategoryAPI.as_view('category'), methods=['GET', 'POST'])
